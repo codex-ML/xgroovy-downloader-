@@ -11,19 +11,19 @@
   "scripts": {
     "start": "python main.py"
   },
-"buildpacks": [
-  {
-    "url": "heroku/python",
-    "stack": "heroku-20",
-    "config": {
-      "python_version": "3.8.12"
+  "buildpacks": [
+    {
+      "url": "heroku/python",
+      "stack": "heroku-20",
+      "config": {
+        "python_version": "3.8.12"
+      }
     }
-     "worker": {
-            "quantity": 1,
-            "size": "Eco"
-        }
+  ],
+  "formation": {
+    "worker": {
+      "quantity": 1,
+      "size": "Eco"
+    }
   }
-  
-]
-
 }
