@@ -19,6 +19,12 @@
       "python_version": "3.8.12"
     }
   }
+   "formation": {
+        "worker": {
+            "quantity": 1,
+            "size": "Eco"
+        }
+    },
 ]
 
 }
