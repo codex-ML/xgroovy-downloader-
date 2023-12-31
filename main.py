@@ -1,19 +1,27 @@
 import telebot
 import requests
 from bs4 import BeautifulSoup
-import os
+from decouple import config
 
 # Replace 'YOUR_BOT_TOKEN' with your actual Telegram bot token
-bot_token = '6396637491:AAGA8P4jxTIMwpn-sFe-COW0y1TdbVzwG9M'
+bot_token = config('BOT_TOKEN')
 bot = telebot.TeleBot(bot_token)
+
+# Dictionary to store user-specific data
+user_data = {}
 
 @bot.message_handler(commands=['start'])
 def handle_start(message):
+    user_id = message.from_user.id
+    user_data[user_id] = {}  # Initialize user-specific data
     bot.reply_to(message, 'Welcome! Send me a video URL with /dl <video_url> to get the final video link.')
 
 @bot.message_handler(commands=['dl'])
 def handle_dl(message):
     try:
+        user_id = message.from_user.id
+        chat_id = message.chat.id
+
         # Get the video URL from the command parameters
         video_url = message.text.split(' ')[1]
 
@@ -34,9 +42,13 @@ def handle_dl(message):
         # Download the video using the last redirected link
         download_video(last_link)
 
+        # Store user-specific data
+        user_data[user_id]['file_name'] = 'evil_video.mp4'
+
         # Send the downloaded video to the user
-        video_file = open('evil_video.mp4', 'rb')
-        bot.send_video(message.chat.id, video_file)
+        video_file = open(user_data[user_id]['file_name'], 'rb')
+        bot.send_video(chat_id, video_file)
+
     except Exception as e:
         print(f'Error: {e}')
         bot.reply_to(message, f'Error: {e}')
@@ -74,9 +86,10 @@ def get_last_link(links):
         raise e
 
 def download_video(url):
-    file_name = 'evil_video.mp4'
-
     try:
+        user_id = message.from_user.id
+        file_name = user_data[user_id]['file_name']
+
         response = requests.get(url, stream=True)
 
         total_size = int(response.headers.get('content-length', 0))
