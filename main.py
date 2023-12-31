@@ -41,7 +41,7 @@ def handle_dl(message):
         print(last_link)
 
         # Download the video using the last redirected link
-        download_video(message, last_link)
+        download_video(message, last_link)  # Pass the message object here
 
         # Store user-specific data
         user_data[user_id]['file_name'] = 'evil_video.mp4'
