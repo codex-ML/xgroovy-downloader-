@@ -1,29 +1,24 @@
 {
-  "name": "xgroovy downloader",
-  "description": "xgroovy downloader Telegram bot",
-  "repository": "https://github.com/sumityadav8894/xgroovy-downloader.git",
-  "logo": "https://example.com/your-logo.png",
-  "keywords": ["telegram", "python", "bot"],
+  "name": "Xgroovy Downloader",
+  "description": "Telegram Bot deployed on Heroku",
+  "repository": "https://github.com/sumityadav8894/xgroovy-downloader-",
   "env": {
     "BOT_TOKEN": {
-      "description": "Your Telegram bot token",
-      "required": true
+      "description": "Telegram bot token",
+      "required": false
     }
   },
-  "addons": [
-    "heroku-postgresql"
-  ],
   "scripts": {
-    "postdeploy": "python main.py"
+    "start": "python main.py"
   },
-  "formation": {
-    "web": {
-      "quantity": 1
+"buildpacks": [
+  {
+    "url": "heroku/python",
+    "stack": "heroku-20",
+    "config": {
+      "python_version": "3.8.12"
     }
-  },
-  "buildpacks": [
-    {
-      "url": "heroku/python"
-    }
-  ]
+  }
+]
+
 }
