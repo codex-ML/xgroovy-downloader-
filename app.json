@@ -18,13 +18,12 @@
     "config": {
       "python_version": "3.8.12"
     }
-  }
-   "formation": {
-        "worker": {
+     "worker": {
             "quantity": 1,
             "size": "Eco"
         }
-    },
+  }
+  
 ]
 
 }
