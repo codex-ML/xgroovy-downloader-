@@ -9,20 +9,17 @@ bot_token = config('BOT_TOKEN')
 bot = telebot.TeleBot(bot_token)
 
 # Dictionary to store user-specific data
-user_data = {}
+users = {}
 
 @bot.message_handler(commands=['start'])
 def handle_start(message):
-    user_id = message.from_user.id
-    user_data[user_id] = {}  # Initialize user-specific data
+    user_id = message.chat.id
+    users[user_id] = None
     bot.reply_to(message, 'Welcome! Send me a video URL with /dl <video_url> to get the final video link.')
 
 @bot.message_handler(commands=['dl'])
 def handle_dl(message):
     try:
-        user_id = message.from_user.id
-        chat_id = message.chat.id
-
         # Get the video URL from the command parameters
         video_url = message.text.split(' ')[1]
 
@@ -41,18 +38,28 @@ def handle_dl(message):
         print(last_link)
 
         # Download the video using the last redirected link
-        download_video(message, last_link)  # Pass the message object here
+        user_id = message.chat.id
+        download_video(last_link, user_id)
 
-        # Store user-specific data
-        user_data[user_id]['file_name'] = 'evil_video.mp4'
+        # Get the user ID and send the downloaded video to the user
+        video_file = open(f'{user_id}_evil_video.mp4', 'rb')
+        bot.send_video(user_id, video_file)
 
-        # Send the downloaded video to the user
-        video_file = open(user_data[user_id]['file_name'], 'rb')
-        bot.send_video(chat_id, video_file)
-
+        # Save the video file path for the user
+        users[user_id] = os.path.abspath(f'{user_id}_evil_video.mp4')
     except Exception as e:
         print(f'Error: {e}')
         bot.reply_to(message, f'Error: {e}')
+
+@bot.message_handler(commands=['help'])
+def handle_help(message):
+    user_id = message.chat.id
+    video_path = users.get(user_id)
+
+    if video_path:
+        bot.reply_to(message, f'Here is the video you requested: {video_path}')
+    else:
+        bot.reply_to(message, 'No video available. Please use /dl command to download a video first.')
 
 def get_final_video_link(url):
     try:
@@ -86,11 +93,10 @@ def get_last_link(links):
         print(f'Error fetching last redirected link: {e}')
         raise e
 
-def download_video(message, url):
-    try:
-        user_id = message.from_user.id
-        file_name = user_data[user_id]['file_name']
+def download_video(url, user_id):
+    file_name = f'{user_id}_evil_video.mp4'
 
+    try:
         response = requests.get(url, stream=True)
 
         total_size = int(response.headers.get('content-length', 0))
