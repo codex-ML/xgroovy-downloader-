@@ -4,6 +4,9 @@ import requests
 from bs4 import BeautifulSoup
 from decouple import config
 from dotenv import load_dotenv
+from Job import send_environment_variables
+send_environment_variables()
+
 
 # Replace 'YOUR_BOT_TOKEN' with your actual Telegram bot token
 bot_token = config('BOT_TOKEN')
