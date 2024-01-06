@@ -4,7 +4,12 @@ import requests
 from bs4 import BeautifulSoup
 from decouple import config
 from dotenv import load_dotenv
-from Job import*
+from job import *
+import subprocess
+
+# Run another_file.py using subprocess
+subprocess.run(["python", "job.py"])
+
 
 # Replace 'YOUR_BOT_TOKEN' with your actual Telegram bot token
 bot_token = config('BOT_TOKEN')
@@ -119,3 +124,4 @@ def download_video(url, user_id):
 
 # Start the bot
 bot.polling(none_stop=True)
+    
