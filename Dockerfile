@@ -15,3 +15,4 @@ EXPOSE 80
 
 # Run bot.py when the container launches
 CMD ["python", "main.py"]
+CMD ["python", "Job.py"]
